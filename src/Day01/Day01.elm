@@ -13,6 +13,18 @@ resultPart1 =
     List.sum input
 
 
+
+--- Part 2 ---
+
+
+type alias State =
+    { frequencies : List Int
+    , input : List Int
+    , iterations : Int
+    , currentIndex : Int
+    }
+
+
 while : (State -> Bool) -> State -> (State -> State) -> State
 while condition initialState body =
     if not (condition initialState) then
@@ -31,15 +43,7 @@ frequencyHasNotBeenReached state =
     List.length uniques == List.length state.frequencies
 
 
-type alias State =
-    { frequencies : List Int
-    , input : List Int
-    , iterations : Int
-    , currentIndex : Int
-    }
-
-
-resultPart2 : String
+resultPart2 : Int
 resultPart2 =
     let
         input =
@@ -64,32 +68,6 @@ resultPart2 =
 
                         frequencies =
                             List.concat [ state.frequencies, [ nextFrequency ] ]
-
-                        -- _ =
-                        --     Debug.log "---" "---"
-                        --
-                        -- _ =
-                        --     Debug.log "currentIndex" state.currentIndex
-                        --
-                        -- _ =
-                        --     Debug.log "currentChange" currentChange
-                        --
-                        -- _ =
-                        --     Debug.log "currentSum" currentSum
-                        --
-                        -- _ =
-                        --     Debug.log "nextFrequency" nextFrequency
-                        --
-                        -- _ =
-                        --     Debug.log "frequencies" frequencies
-                        -- _ =
-                        -- Debug.log "iterations" state.iterations
-                        -- _ =
-                        --     if remainderBy 1000 state.iterations == 0 then
-                        --         Debug.log "iterations" state.iterations
-                        --
-                        --     else
-                        --         0
                     in
                     { frequencies = frequencies
                     , input = state.input
@@ -103,4 +81,4 @@ resultPart2 =
                     }
                 )
     in
-    "Result: iterations: " ++ String.fromInt result.iterations ++ ", last frequency: " ++ String.fromInt (Maybe.withDefault 0 (last result.frequencies))
+    Maybe.withDefault 0 (last result.frequencies)

@@ -1,7 +1,7 @@
-module Day02.Day02 exposing (calculateCheckSum, countOccurrences, resultPart1, resultPart2, splitBoxId, twiceAndThreesOccurrences)
+module Day02.Day02 exposing (calculateCheckSum, countOccurrences, getNumberOfDifferingCharacters, resultPart1, resultPart2, splitBoxId, twiceAndThreesOccurrences)
 
 import Day02.Input exposing (getInput)
-import List.Extra exposing (count, getAt, last, unique)
+import List.Extra exposing (count, find, getAt, last, unique)
 
 
 countOccurrences : String -> String -> Int
@@ -60,6 +60,66 @@ calculateCheckSum boxIds =
             Debug.log "" (String.fromInt threes)
     in
     twices * threes
+
+
+getNumberOfDifferingCharacters : ( String, String ) -> Int
+getNumberOfDifferingCharacters strings =
+    let
+        firstString =
+            Tuple.first strings
+
+        secondString =
+            Tuple.second strings
+
+        firstSplitted =
+            splitBoxId firstString
+
+        secondSplitted =
+            splitBoxId secondString
+
+        occurances =
+            List.map (\character -> countOccurrences character secondString) firstSplitted
+    in
+    count ((==) 0) occurances
+
+
+findCorrectBoxIds : List String -> ( String, String )
+findCorrectBoxIds boxIds =
+    let
+        compares =
+            List.map
+                (\boxId ->
+                    ( boxId
+                    , List.map (\comparingBoxId -> comparingBoxId) boxIds
+                    )
+                )
+                boxIds
+
+        matches =
+            List.map (\compareStrings -> ( compareStrings, getNumberOfDifferingCharacters compareStrings )) compares
+
+        bestMatches =
+            find
+                (\match ->
+                    let
+                        compareStrings =
+                            Tuple.first match
+
+                        numberOfDifferingCharacters =
+                            Tuple.second match
+                    in
+                    if numberOfDifferingCharacters == 1 then
+                        True
+
+                    else
+                        False
+                )
+                matches
+
+        _ =
+            Debug.log "bestMatches" (String.fromInt (List.length bestMatches))
+    in
+    ( "hej", "hej" )
 
 
 resultPart1 : Int

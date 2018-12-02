@@ -1,6 +1,6 @@
 module Day02.Tests exposing (suite)
 
-import Day02.Day02 as Day02 exposing (calculateCheckSum, countOccurrences, splitBoxId, twiceAndThreesOccurrences)
+import Day02.Day02 as Day02 exposing (calculateCheckSum, countOccurrences, findCorrectBoxIds, getNumberOfDifferingCharacters, splitBoxId, twiceAndThreesOccurrences)
 import Expect exposing (Expectation)
 import Fuzz exposing (Fuzzer, int, list, string)
 import List.Extra exposing (getAt, last, uniqueBy)
@@ -60,7 +60,6 @@ suite =
                         "d"
             ]
         , describe "findNumberOfTwices"
-            -- Nest as many descriptions as you like.
             [ test
                 "returns False when there are none"
               <|
@@ -87,5 +86,40 @@ suite =
                             calculateCheckSum [ "abcdef", "bababc", "abbcde", "abcccd", "aabcdd", "abcdee", "ababab" ]
                     in
                     Expect.equal checksum 12
+            ]
+        , describe "find difference between two strings"
+            [ test
+                "when there is one differing letter"
+              <|
+                \_ ->
+                    Expect.equal (getNumberOfDifferingCharacters ( "abcd", "abce" )) 1
+            , test
+                "when there are multiple differing letters"
+              <|
+                \_ ->
+                    Expect.equal (getNumberOfDifferingCharacters ( "abcd", "efgh" )) 4
+            , test
+                "when there are no differing letters"
+              <|
+                \_ ->
+                    Expect.equal (getNumberOfDifferingCharacters ( "abcd", "abcd" )) 0
+            ]
+        , describe "find the correct IDs"
+            [ test
+                "given a list of strings"
+              <|
+                \_ ->
+                    let
+                        boxIds =
+                            [ "abcde"
+                            , "fghij"
+                            , "klmno"
+                            , "pqrst"
+                            , "fguij"
+                            , "axcye"
+                            , "wvxyz"
+                            ]
+                    in
+                    Expect.equal (findCorrectBoxIds boxIds) ( "fghij", "fguij" )
             ]
         ]
