@@ -1,4 +1,4 @@
-module Day02.Day02 exposing (calculateCheckSum, countOccurrences, getNumberOfDifferingCharacters, resultPart1, resultPart2, splitBoxId, twiceAndThreesOccurrences)
+module Day02.Day02 exposing (calculateCheckSum, countOccurrences, findCorrectBoxIds, getNumberOfDifferingCharacters, resultPart1, resultPart2, splitBoxId, stripBoxIdsFromDifferingCharacters, twiceAndThreesOccurrences)
 
 import Day02.Input exposing (getInput)
 import List.Extra exposing (count, find, getAt, last, unique)
@@ -52,77 +52,99 @@ calculateCheckSum boxIds =
 
         threes =
             count ((==) True) (List.map (\occ -> Tuple.second occ) occurances)
-
-        _ =
-            Debug.log "" (String.fromInt twices)
-
-        _ =
-            Debug.log "" (String.fromInt threes)
     in
     twices * threes
+
+
+getCharacterDifferences : ( String, String ) -> List ( Int, Bool )
+getCharacterDifferences strings =
+    let
+        firstSplitted =
+            splitBoxId (Tuple.first strings)
+
+        secondSplitted =
+            splitBoxId (Tuple.second strings)
+
+        matches =
+            List.indexedMap
+                (\index firstCharacter ->
+                    let
+                        secondCharacter =
+                            Maybe.withDefault "" (getAt index secondSplitted)
+                    in
+                    ( index, secondCharacter == firstCharacter )
+                )
+                firstSplitted
+    in
+    matches
 
 
 getNumberOfDifferingCharacters : ( String, String ) -> Int
 getNumberOfDifferingCharacters strings =
     let
-        firstString =
-            Tuple.first strings
-
-        secondString =
-            Tuple.second strings
-
-        firstSplitted =
-            splitBoxId firstString
-
-        secondSplitted =
-            splitBoxId secondString
-
-        occurances =
-            List.map (\character -> countOccurrences character secondString) firstSplitted
+        numberOfDiffering =
+            getCharacterDifferences strings
     in
-    count ((==) 0) occurances
+    count ((==) False) (List.map (\difference -> Tuple.second difference) numberOfDiffering)
+
+
+compareStrings : String -> List String -> List ( ( String, String ), Int )
+compareStrings string allStrings =
+    List.map
+        (\compareString -> ( ( string, compareString ), getNumberOfDifferingCharacters ( string, compareString ) ))
+        allStrings
 
 
 findCorrectBoxIds : List String -> ( String, String )
 findCorrectBoxIds boxIds =
     let
-        compares =
-            List.map
-                (\boxId ->
-                    ( boxId
-                    , List.map (\comparingBoxId -> comparingBoxId) boxIds
-                    )
-                )
-                boxIds
+        allStrings =
+            List.map (\boxId -> compareStrings boxId boxIds) boxIds
 
-        matches =
-            List.map (\compareStrings -> ( compareStrings, getNumberOfDifferingCharacters compareStrings )) compares
-
-        bestMatches =
+        bestMatchMaybe =
             find
                 (\match ->
                     let
-                        compareStrings =
-                            Tuple.first match
-
                         numberOfDifferingCharacters =
                             Tuple.second match
                     in
-                    if numberOfDifferingCharacters == 1 then
-                        True
-
-                    else
-                        False
+                    numberOfDifferingCharacters == 1
                 )
-                matches
-
-        _ =
-            Debug.log "bestMatches" (String.fromInt (List.length bestMatches))
+                (List.concat allStrings)
     in
-    ( "hej", "hej" )
+    case bestMatchMaybe of
+        Just bestMatch ->
+            Tuple.first bestMatch
+
+        Nothing ->
+            ( "", "" )
 
 
-resultPart1 : Int
+stripBoxIdsFromDifferingCharacters : ( String, String ) -> String
+stripBoxIdsFromDifferingCharacters strings =
+    let
+        firstSplitted =
+            splitBoxId (Tuple.first strings)
+
+        differences =
+            getCharacterDifferences strings
+
+        characterIndexesToKeep =
+            List.filter (\difference -> Tuple.second difference) differences
+
+        lettersToKeep =
+            List.map (\difference -> Maybe.withDefault "" (getAt (Tuple.first difference) firstSplitted))
+                characterIndexesToKeep
+    in
+    String.join "" lettersToKeep
+
+
+findCommonLettersBetweenCorrectBoxIds : List String -> String
+findCommonLettersBetweenCorrectBoxIds boxIds =
+    stripBoxIdsFromDifferingCharacters (findCorrectBoxIds boxIds)
+
+
+resultPart1 : String
 resultPart1 =
     let
         input =
@@ -131,13 +153,13 @@ resultPart1 =
         checksum =
             calculateCheckSum input
     in
-    checksum
+    "Checksum is: " ++ String.fromInt checksum
 
 
-resultPart2 : Int
+resultPart2 : String
 resultPart2 =
     let
-        input =
-            getInput
+        result =
+            findCommonLettersBetweenCorrectBoxIds getInput
     in
-    3
+    "Common letters between correct box IDs are: " ++ result

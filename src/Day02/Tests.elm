@@ -1,8 +1,7 @@
 module Day02.Tests exposing (suite)
 
-import Day02.Day02 as Day02 exposing (calculateCheckSum, countOccurrences, findCorrectBoxIds, getNumberOfDifferingCharacters, splitBoxId, twiceAndThreesOccurrences)
+import Day02.Day02 as Day02 exposing (calculateCheckSum, countOccurrences, findCorrectBoxIds, getNumberOfDifferingCharacters, splitBoxId, stripBoxIdsFromDifferingCharacters, twiceAndThreesOccurrences)
 import Expect exposing (Expectation)
-import Fuzz exposing (Fuzzer, int, list, string)
 import List.Extra exposing (getAt, last, uniqueBy)
 import Test exposing (..)
 
@@ -10,18 +9,18 @@ import Test exposing (..)
 suite : Test
 suite =
     describe "Day02"
-        [ describe "count occurencies of character"
+        [ describe "count occurrences of character"
             [ test "when there is one occurance" <|
                 \_ ->
                     Expect.equal
                         (countOccurrences "a" "abcdef")
                         1
-            , test "when there is multiple occurancies" <|
+            , test "when there is multiple occurrences" <|
                 \_ ->
                     Expect.equal
                         (countOccurrences "a" "abadea")
                         3
-            , test "when there are no occurancies" <|
+            , test "when there are no occurrences" <|
                 \_ ->
                     Expect.equal
                         (countOccurrences "z" "abadea")
@@ -97,7 +96,17 @@ suite =
                 "when there are multiple differing letters"
               <|
                 \_ ->
-                    Expect.equal (getNumberOfDifferingCharacters ( "abcd", "efgh" )) 4
+                    Expect.equal (getNumberOfDifferingCharacters ( "afcd", "efgh" )) 3
+            , test
+                "when there are many differing letters"
+              <|
+                \_ ->
+                    Expect.equal (getNumberOfDifferingCharacters ( "abc", "cba" )) 2
+            , test
+                "when there all letters differ"
+              <|
+                \_ ->
+                    Expect.equal (getNumberOfDifferingCharacters ( "abc", "cda" )) 3
             , test
                 "when there are no differing letters"
               <|
@@ -121,5 +130,12 @@ suite =
                             ]
                     in
                     Expect.equal (findCorrectBoxIds boxIds) ( "fghij", "fguij" )
+            ]
+        , describe "strips the differing characters"
+            [ test
+                "given two box IDs"
+              <|
+                \_ ->
+                    Expect.equal (stripBoxIdsFromDifferingCharacters ( "fghij", "fguij" )) "fgij"
             ]
         ]
