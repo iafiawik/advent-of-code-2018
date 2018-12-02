@@ -1,7 +1,7 @@
 module Day02.Day02 exposing (calculateCheckSum, countOccurrences, findCorrectBoxIds, getNumberOfDifferingCharacters, resultPart1, resultPart2, splitBoxId, stripBoxIdsFromDifferingCharacters, twiceAndThreesOccurrences)
 
 import Day02.Input exposing (getInput)
-import List.Extra exposing (count, find, getAt, last, unique)
+import List.Extra exposing (count, find, getAt)
 
 
 countOccurrences : String -> String -> Int
