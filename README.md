@@ -8,7 +8,7 @@ These are my solutions to the Advent of Code 2018 problems. I have used Elm this
 | Day | 2018               |
 | --- | ------------------ |
 | 1   | :star:       |
-| 2   |              |
+| 2   | :star:       |
 | 3   |              |
 | 4   |              |
 | 5   |              |
