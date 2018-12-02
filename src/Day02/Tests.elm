@@ -2,7 +2,7 @@ module Day02.Tests exposing (suite)
 
 import Day02.Day02 as Day02 exposing (calculateCheckSum, countOccurrences, findCorrectBoxIds, getNumberOfDifferingCharacters, splitBoxId, stripBoxIdsFromDifferingCharacters, twiceAndThreesOccurrences)
 import Expect exposing (Expectation)
-import List.Extra exposing (getAt, last, uniqueBy)
+import List.Extra exposing (getAt)
 import Test exposing (..)
 
 
