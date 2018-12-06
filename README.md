@@ -9,7 +9,7 @@ These are my solutions to the Advent of Code 2018 problems. I have used Elm this
 | --- | ------------------ |
 | 1   | :star::star:|
 | 2   | :star::star:|
-| 3   |             |
+| 3   | :star::star:|
 | 4   |             |
 | 5   |             |
 | 6   |             |
