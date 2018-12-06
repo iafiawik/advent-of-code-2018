@@ -1,4 +1,4 @@
-module DayXX.Input exposing (getInput)
+module Day03.Input exposing (getInput)
 
 import String exposing (split)
 
